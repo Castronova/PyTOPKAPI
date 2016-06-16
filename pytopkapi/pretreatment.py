@@ -193,7 +193,17 @@ def sort_cell(ar_cell_label, ar_cell_down):
     for cell in range(nb_cell):
         cell_down=ar_cell_down[cell]
         dist=0
+        cells = []
         while cell_down > -99:
+            # todo: the script might require correction
+            if cell_down in cells:
+                with open("./error_ptpk.txt", "w") as f:
+                    f.write('IDs\n')
+                    for i in cells:
+                        f.write("%s"%i)
+                    raise Exception("Cell repeated in calculating distance to outlet")
+            else:
+                cells.append(cell_down)
             cell_down=ar_cell_down[cell_down]
             dist=dist+1
         ar_dist_2_outlet[cell]=dist
