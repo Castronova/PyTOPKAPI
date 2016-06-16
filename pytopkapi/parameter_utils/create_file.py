@@ -161,6 +161,9 @@ def generate_param_file(ini_fname, isolated_cells=False):
     network_fname = config.get('raster_files', 'channel_network_fname')
     flowdir_fname = config.get('raster_files', 'flowdir_fname')
     fdir_source = config.get('raster_files', 'flowdir_source')
+    n_c_fname = None
+    if config.has_option('raster_files', 'channel_manning_fname'):
+        n_c_fname = config.get('raster_files', 'channel_manning_fname')
 
     pVs_t0 = config.get('numerical_values', 'pVs_t0')
     Vo_t0 = config.get('numerical_values', 'Vo_t0')
@@ -207,9 +210,26 @@ def generate_param_file(ini_fname, isolated_cells=False):
                                                      X, Y, cell_down,
                                                      dem[mask == 1])
 
-        n_c = strahler_to_channel_manning(cell_labels,
-                                          channel_network[mask == 1],
-                                          cell_down)
+        if n_c_fname is None:
+            n_c = strahler_to_channel_manning(cell_labels,
+                                              channel_network[mask == 1],
+                                              cell_down)
+        # elif strahler_fname != None:
+        #     strahler_fname = config.get('raster_files', 'strahler_fname')
+        #     n_c_array = read_raster(strahler_fname)
+        #     n_c_array[n_c_array<=0] == 0
+        #     n_c_array[n_c_array==1] == 0.05
+        #     n_c_array[n_c_array==1] == 0.04
+        #     n_c_array[n_c_array==1] == 0.035
+        #     n_c_array[n_c_array==1] == 0.03
+        #     n_c_array[n_c_array==1] == 0.03
+        #     n_c_array[n_c_array==1] == 0.025
+        else:
+            n_c_array = read_raster(n_c_fname)
+            n_c_array[n_c_array <=0 ] = 0
+            n_c = n_c_array[mask==1]
+
+
 
     # Write parameter file
     param_table = np.zeros((ncells, nparams))
