@@ -99,6 +99,7 @@ def green_ampt_cum_infiltration(rain, psi, eff_theta,
                                                  eff_theta, eff_sat, K)
 
         if f_t0 <= rain:
+            print 'PONDING HAS OCCURRED'
             # ponding occurs throughout interval
             dtheta = (1 - eff_sat)*eff_theta
 
@@ -121,6 +122,7 @@ def green_ampt_cum_infiltration(rain, psi, eff_theta,
                 # no ponding infiltrate at rain rate
                 F_t1 = Fprime
             else:
+                print 'PONDING HAS OCCURRED'
                 # ponding has occurred
                 dtheta = (1 - eff_sat)*eff_theta
 
